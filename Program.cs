@@ -6,16 +6,14 @@
         {
             do
             {
-                Console.WriteLine("Welcome to the main menu. Please select your option: \n0: Exit \n1: Feedback");
+                Console.WriteLine("Welcome to the main menu. Please select your option: \n0: Exit");
                 string input = Console.ReadLine();
                 switch (input)
                 {
                     case "0": Environment.Exit(0);
                         break;
-                    case "1":
-                        Console.WriteLine("Please provide a valid input"); 
-                        break;
                     default:
+                        Console.WriteLine("Please provide a valid input");
                         break;
                 }
             }
