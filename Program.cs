@@ -14,33 +14,55 @@
                         break;
                     case "1":
                         Console.Write("Vänligen ange din ålder: ");
-                        // Add logic to check if the input is correct
-                        int age = int.Parse(Console.ReadLine());
+
+                        uint age;
+                        string ageInput = Console.ReadLine();
+
+                        //Create a method to validate integers ?
+                        while (!uint.TryParse(ageInput, out age))
+                        {
+                            Console.WriteLine("Vänligen ange korrekt ålder");
+                            ageInput = Console.ReadLine();
+                        }
+
                         if (age > 100 || age < 5) Console.WriteLine("Gratis tillträde");
                         else if (age < 20) Console.WriteLine("Ungdomspris: 80kr");
                         else if (age > 64) Console.WriteLine("Pensionärspris: 90kr");
                         else Console.WriteLine("Standardpris: 120kr");
+
                         break;
                     case "2":
                         //Add calculation for the whole company
                         break;
                     case "3":
-                        int printTimes = 10;
+                        int printCount = 10;
                         Console.WriteLine("Vänligen skriv ditt meddelande: ");
-                        //Check user input
                         string message = Console.ReadLine();
-                        for (int i = 0; i < printTimes; i++)
+
+                        while (!IsValidStringInput(message))
+                        {
+                            Console.WriteLine("Vänligen ange ett giltigt meddelande");
+                            message = Console.ReadLine();
+                        }
+
+                        for (int i = 0; i < printCount; i++)
                         {
                             Console.Write(message);
                         }
                         break;
+
                     case "4":
-                        Console.WriteLine("Vänligen skriv ditt meddelande med minst 3 ord: ");
+                        int wordCount = 3;
+                        Console.WriteLine($"Vänligen skriv ditt meddelande med minst {wordCount} ord: ");
                         string messageToSplit = Console.ReadLine();
-                        //Check the input !
                         //Spliting the user input and adding option in split method that removes empty entries in case of more whitespaces
                         string[] words = messageToSplit.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                        //Printing out the third word
+
+                        while (!IsValidStringInput(messageToSplit) || words.Length < 3)
+                        {
+                            Console.WriteLine("Vänligen ange minst tre ord");
+                            messageToSplit = Console.ReadLine();
+                        }
                         Console.WriteLine(words.ElementAt(2));
                         break;
                     default:
@@ -50,5 +72,15 @@
             }
             while (true);
         }
+
+     static bool IsValidStringInput (string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return false;
+            else 
+                return true;
+        }
+
+
     }
 }
