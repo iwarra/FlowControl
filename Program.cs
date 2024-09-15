@@ -7,7 +7,7 @@
             bool isActive = true;
             do
             {   //Turn the menu options to variables and refactor the print menu line to be more readable
-                Console.WriteLine("\nVälkommen till huvudmenyn. Vänligen välj ditt alternativ: \n0: Avsluta \n1: Biljettpris \n3: Lägg till ett meddelande \n4: Skriv minst tre ord");
+                Console.WriteLine("\nVälkommen till huvudmenyn. Vänligen välj ditt alternativ: \n0: Avsluta \n1: Biljettpris \n2: Totalkostnad för hela sällskap  \n3: Lägg till ett meddelande \n4: Skriv minst tre ord");
                 string input = Console.ReadLine();
 
                 switch (input)
@@ -19,7 +19,16 @@
                         PrintThePrice(GetUIntInput("ålder"));
                         break;
                     case "2":
-                        //Add calculation for the whole company
+                        uint nrOfGuests = GetUIntInput("Antal gäster "); //Build logic for if input is zero
+                        uint totalCost = 0;
+                        for (int i = 1; i <= nrOfGuests; i++)
+                        {
+                            uint ageInput = GetUIntInput($"Ange åldern för person {i}: ");
+                            uint price = GetPriceBasedOnAge(ageInput);
+                            totalCost += price;
+                        }
+                        PrintMessage($"\nAntal personer: {nrOfGuests}");
+                        PrintMessage($"Totalkostnad för hela sällskapet: {totalCost}kr");
                         break;
                     case "3":
                         PrintMessage(GetStringInput("meddelande"), 10);
@@ -40,56 +49,69 @@
             }
             while (isActive);
         }
-    private static uint GetUIntInput(string prompt)
-    {
-        do
+
+        private static uint GetUIntInput(string prompt)
         {
-            string input = GetStringInput(prompt);
-            if (uint.TryParse(input, out uint result))
+            do
             {
-                return result;
+                string input = GetStringInput(prompt);
+                if (uint.TryParse(input, out uint result))
+                {
+                    return result;
+                }
+                else
+                {
+                    PrintMessage($"Vänligen ange ett giltigt {prompt}");
+                }
             }
-            else
-            {
-                Console.WriteLine($"Vänligen ange ett giltigt {prompt}");
-            }
+            while (true);    
         }
-        while (true);    
-    }
 
-    private static string GetStringInput(string prompt)
-    { 
-        bool isCorrect = false;
-        string input;
 
-        do
-        {
-            Console.WriteLine(prompt);
-            input = Console.ReadLine();
+        private static string GetStringInput(string prompt)
+        { 
+            bool isCorrect = false;
+            string input;
 
-            if (string.IsNullOrWhiteSpace(input))
+            do
             {
-                Console.WriteLine($"Vänligen ange ett giltigt {prompt}");
+                Console.WriteLine(prompt);
                 input = Console.ReadLine();
-            }
-            else
-            {
-                isCorrect = true;
-            }
-        } while (!isCorrect);
 
-        return input;
-    }
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.WriteLine($"Vänligen ange ett giltigt {prompt}");
+                    input = Console.ReadLine();
+                }
+                else
+                {
+                    isCorrect = true;
+                }
+            } while (!isCorrect);
 
-    private static void PrintThePrice(uint age)
-    {
-        if (age > 100 || age < 5) Console.WriteLine("Gratis tillträde");
-        else if (age < 20) Console.WriteLine("Ungdomspris: 80kr");
-        else if (age > 64) Console.WriteLine("Pensionärspris: 90kr");
-        else Console.WriteLine("Standardpris: 120kr");
-    }
+            return input;
+        }
 
-    private static void PrintMessage(string message, int printCount = 1)
+
+        private static void PrintThePrice(uint age)
+        {
+            if (age > 100 || age < 5) PrintMessage("Gratis tillträde");
+            else if (age < 20) PrintMessage("Ungdomspris: 80kr");
+            else if (age > 64) PrintMessage("Pensionärspris: 90kr");
+            else PrintMessage("Standardpris: 120kr");
+        }
+
+
+        private static uint GetPriceBasedOnAge(uint age)
+        {
+            if (age > 100 || age < 5) return 0;
+            else if (age < 20) return 80;
+            else if (age > 64) return 90;
+            else return 120;
+        }
+
+
+        private static void PrintMessage(string message, int printCount = 1)
         { 
             if (printCount > 1 )
             { 
