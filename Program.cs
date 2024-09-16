@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
+﻿
 namespace FlowControl
 {
     internal class Program
@@ -18,33 +17,18 @@ namespace FlowControl
                         isActive = false;
                         break;
                     case "1":
-                        PrintThePrice(GetUIntInput("ålder"));
+                        PrintThePrice(GetUIntInput("Vänligen ange ditt ålder: "));
                         break;
                     case "2":
-                        uint nrOfGuests = GetUIntInput("Antal gäster "); //Build logic for if input is zero
-                        uint totalCost = 0;
-                        for (int i = 1; i <= nrOfGuests; i++)
-                        {
-                            uint ageInput = GetUIntInput($"Ange åldern för person {i}: ");
-                            uint price = GetPriceBasedOnAge(ageInput);
-                                totalCost += price;
-                        }
-                        PrintMessage($"\nAntal personer: {nrOfGuests} \nTotalkostnad för hela sällskapet: {totalCost} kr");
+                        uint nrOfGuests = GetUIntInput("Antal gäster "); 
+                        PrintMessage($"\nAntal personer: {nrOfGuests}" +
+                                     $"\nTotalkostnad för hela sällskapet: {CalculateTotalPrice(nrOfGuests)} kr");
                         break;
                     case "3":
-                        PrintMessage(GetStringInput("meddelande"), 10);
+                        PrintMessage(GetStringInput("Ditt meddelande: "), 10);
                         break;
                     case "4":
-                        int wordCount = 3;
-                        string messageToSplit = GetStringInput($"meddelande med minst {wordCount} ord: ");
-                        //Spliting the user input and adding option in split method that removes empty entries in case of more whitespaces
-                        string[] words = messageToSplit.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                        while (words.Length < wordCount)
-                        {
-                            messageToSplit = GetStringInput($"meddelande med minst {wordCount} ord: ");
-                            words = messageToSplit.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                        }
-                        PrintMessage(words.ElementAt(wordCount - 1));
+                        HandleMessage(3);
                         break;
                     default:
                         PrintMessage("Vänligen ange ett giltigt alternativ");
@@ -54,28 +38,25 @@ namespace FlowControl
             while (isActive);
         }
 
-      private static class MenuHelper
+    private static class MenuHelper
+    {
+        public const string Exit = "0";
+        public const string PriceMenu = "1";
+        public const string CostCalculator = "2";
+        public const string ShowMessage = "3";
+        public const string ShowSpecificWord = "4";
+
+        public static void ShowMenu()
         {
-            public const string Exit = "0";
-            public const string PriceMenu = "1";
-            public const string CostCalculator = "2";
-            public const string Message = "3";
-            public const string WordCountMessage = "4";
+            Console.WriteLine($"\nVälkommen till huvudmenyn. Vänligen välj ditt alternativ:" +
+            $"\n{Exit}: Avsluta" +
+            $"\n{ PriceMenu}: Biljettpris" +
+            $"\n{CostCalculator}: Totalkostnad för hela sällskap" +
+            $"\n{ShowMessage}: Lägg till ett meddelande" +
+            $"\n{ShowSpecificWord}: Skriv minst tre ord");
+        }
+    }
 
-public static void ShowMenu()
-{
-    Console.WriteLine($@"
-Välkommen till huvudmenyn. Vänligen välj ditt alternativ:   
-{Exit}: Avsluta 
-{PriceMenu}: Biljettpris 
-{CostCalculator}: Totalkostnad för hela sällskap  
-{Message}: Lägg till ett meddelande 
-{WordCountMessage}: Skriv minst tre ord");
- }
-}
-
-
-    
 
     private static uint GetUIntInput(string prompt)
     {
@@ -129,6 +110,18 @@ Välkommen till huvudmenyn. Vänligen välj ditt alternativ:
     }
 
 
+    private static uint CalculateTotalPrice(uint nrOfGuests) {
+            uint totalCost = 0;
+            for (int i = 1; i <= nrOfGuests; i++)
+            {
+                uint ageInput = GetUIntInput($"Ange åldern för person {i}: ");
+                uint price = GetPriceBasedOnAge(ageInput);
+                totalCost += price;
+            }
+            return totalCost;
+        }
+
+
     private static uint GetPriceBasedOnAge(uint age)
     {
         if (age > 100 || age < 5) return 0;
@@ -152,6 +145,22 @@ Välkommen till huvudmenyn. Vänligen välj ditt alternativ:
             Console.WriteLine(message);
         }
     }
+
+
+    private static void HandleMessage(int wordCount)
+        {
+            
+            string messageToSplit = GetStringInput($"Vänligen ange ett meddelande med minst {wordCount} ord: ");
+            //Spliting the user input and adding option in split method that removes empty entries in case of more whitespaces
+            string[] words = messageToSplit.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            while (words.Length < wordCount)
+            {
+                messageToSplit = GetStringInput($"meddelande med minst {wordCount} ord: ");
+                words = messageToSplit.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            }
+            string wordToPrint = words.ElementAt(wordCount - 1);
+            PrintMessage(wordToPrint);
+        }
 
     }
 }
